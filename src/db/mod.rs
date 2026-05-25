@@ -62,6 +62,10 @@ impl Database {
         Ok(Database { conn: Mutex::new(conn) })
     }
 
+    pub fn lock(&self) -> std::sync::MutexGuard<'_, Connection> {
+        self.conn.lock().unwrap()
+    }
+
     pub fn migrate(&self) -> anyhow::Result<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute_batch("

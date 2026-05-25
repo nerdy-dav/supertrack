@@ -12,6 +12,24 @@
   </div>
 </div>
 <div class="section">
+  <h2>Backup</h2>
+  <div class="report-cards">
+    <div class="report-card">
+      <h3>💾 Download Database Backup</h3>
+      <p>Download a zipped copy of your entire database (all employees, pay runs, payments, and business settings).</p>
+      <a href="/backup" class="btn btn-primary">Download Backup (.zip)</a>
+    </div>
+    <div class="report-card">
+      <h3>📂 Restore Database Backup</h3>
+      <p>Upload a previously downloaded backup zip to restore your data. The current database is automatically backed up with a timestamp before restoring.</p>
+      <form method="post" action="/backup/restore" enctype="multipart/form-data">
+        <input type="file" name="backup" accept=".zip" required>
+        <button type="submit" class="btn btn-warning">Restore Backup</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="section">
   <h2>ATO Key Dates (2026)</h2>
   <table class="data-table">
     <thead><tr><th>Date</th><th>Obligation</th><th>Notes</th></tr></thead>

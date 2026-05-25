@@ -4,7 +4,7 @@ mod routes;
 
 use axum::{
     Router,
-    routing::{get},
+    routing::{get, post},
     response::Response,
     body::Body,
     http::header,
@@ -14,6 +14,7 @@ use std::sync::Arc;
 pub struct AppState {
     pub db: Arc<db::Database>,
     pub env: Arc<minijinja::Environment<'static>>,
+    pub db_path: String,
 }
 
 async fn serve_css() -> Response<Body> {
@@ -28,7 +29,8 @@ async fn serve_css() -> Response<Body> {
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    let database = db::Database::new("supertrack.db")?;
+    let db_path = "supertrack.db".to_string();
+    let database = db::Database::new(&db_path)?;
     database.migrate()?;
 
     let mut env = minijinja::Environment::new();
@@ -38,6 +40,7 @@ async fn main() -> anyhow::Result<()> {
     let state = Arc::new(AppState {
         db: Arc::new(database),
         env: Arc::new(env),
+        db_path,
     });
 
     let app = Router::new()
@@ -53,6 +56,8 @@ async fn main() -> anyhow::Result<()> {
         .route("/calculator", get(routes::calculator::show))
         .route("/reports", get(routes::reports::index))
         .route("/reports/export.csv", get(routes::reports::export_csv))
+        .route("/backup", get(routes::backup::download))
+        .route("/backup/restore", post(routes::backup::restore))
         .with_state(state);
 
     let addr = "0.0.0.0:3000";

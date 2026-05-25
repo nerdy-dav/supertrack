@@ -47,13 +47,22 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: cargo build --release --target ${{ matrix.target }}
-      - name: Package binary
+      - name: Package binary (Linux/macOS)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           cp "target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}" \
              "supertrack-${{ matrix.target }}${{ matrix.ext }}"
           zip "supertrack-${{ matrix.target }}.zip" \
              "supertrack-${{ matrix.target }}${{ matrix.ext }}"
+      - name: Package binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item "target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}" `
+            -Destination "supertrack-${{ matrix.target }}${{ matrix.ext }}"
+          Compress-Archive -Path "supertrack-${{ matrix.target }}${{ matrix.ext }}" `
+            -DestinationPath "supertrack-${{ matrix.target }}.zip"
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:

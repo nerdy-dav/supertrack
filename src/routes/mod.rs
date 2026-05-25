@@ -5,6 +5,7 @@ pub mod pay_runs;
 pub mod payments;
 pub mod calculator;
 pub mod reports;
+pub mod backup;
 
 use axum::response::Html;
 

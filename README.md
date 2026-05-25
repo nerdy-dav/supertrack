@@ -49,6 +49,16 @@ build tools needed.
 All data is stored locally in `supertrack.db` (SQLite) in the same directory
 as the binary. No data is sent anywhere. Back this file up regularly.
 
+### Backup & Restore
+
+**Download a backup** — go to **Reports → Download Backup** to download a
+zipped copy of your entire database with a date stamp.
+
+**Restore a backup** — go to **Reports → Restore Backup** and upload a
+previously downloaded `.zip` file. Before restoring, the current database is
+automatically copied to `supertrack.db.<timestamp>.bak` as a safeguard. The
+restore uses SQLite's online backup API so the server does not need to restart.
+
 ## Disclaimer
 
 This tool assists with record-keeping only. It is not financial or legal advice.
