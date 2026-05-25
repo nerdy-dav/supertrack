@@ -5,6 +5,8 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  release:
+    types: [published]
 
 env:
   CARGO_TERM_COLOR: always
@@ -20,6 +22,7 @@ jobs:
       - run: cargo check
 
   build:
+    if: github.event_name == 'release'
     name: Build (${{ matrix.target }})
     needs: test
     strategy:
@@ -41,8 +44,8 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: cargo build --release --target ${{ matrix.target }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
         with:
+          files: target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}
           name: supertrack-${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}
