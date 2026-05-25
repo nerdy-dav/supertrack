@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header"><h1>Reports & Audit Trail</h1></div>
+<div class="section">
+  <h2>Export Data</h2>
+  <div class="report-cards">
+    <div class="report-card">
+      <h3>📊 Full Compliance Export</h3>
+      <p>All pay runs with super obligations, deadlines, payment dates, and compliance status. Suitable for your accountant or ATO audit evidence.</p>
+      <a href="/reports/export.csv" class="btn btn-primary">Download CSV</a>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <h2>ATO Key Dates (2026)</h2>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>Obligation</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>30 June 2026</td><td>SBSCH closes</td><td>Must be using alternative clearing house</td></tr>
+      <tr><td>1 July 2026</td><td>Payday Super starts</td><td>Super due within 7 business days of each pay date</td></tr>
+      <tr><td>28 July 2026</td><td>Q4 BAS due</td><td>Apr–Jun 2026 quarter</td></tr>
+      <tr><td>28 Oct 2026</td><td>Q1 BAS due</td><td>Jul–Sep 2026 quarter</td></tr>
+      <tr><td>28 Feb 2027</td><td>Q2 BAS due</td><td>Oct–Dec 2026 quarter</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

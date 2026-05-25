@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header"><h1>Record Super Payment</h1></div>
+<div class="form-card">
+  <div class="info-box">
+    <strong>Super Deadline for this pay run: {{ super_deadline }}</strong><br>
+    Amount owing: ${{ super_owing | round(precision=2) }}
+  </div>
+  <form method="post" action="/payments/new/{{ pay_run_id }}">
+    <div class="form-group">
+      <label>Date Payment Left Your Bank Account</label>
+      <input type="date" name="payment_date" value="{{ today }}" required>
+      <small class="help">This must be early enough for funds to reach the clearing house by the deadline.</small>
+    </div>
+    <div class="form-group">
+      <label>Amount Paid ($)</label>
+      <input type="number" name="amount_paid" step="0.01" value="{{ super_owing | round(precision=2) }}" required>
+    </div>
+    <div class="form-group">
+      <label>Clearing House Receipt / Reference (optional but recommended)</label>
+      <input type="text" name="clearing_house_receipt" placeholder="e.g. CHQ-2026-00123">
+    </div>
+    <button type="submit" class="btn btn-primary">Save Payment Record</button>
+    <a href="/pay-runs/{{ pay_run_id }}" class="btn">Cancel</a>
+  </form>
+</div>
+{% endblock %}

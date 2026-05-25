@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Pay Runs</h1>
+  <a href="/pay-runs/new" class="btn btn-primary">+ Log Pay Run</a>
+</div>
+<p class="subtitle">SGC Rate: {{ sgc_rate_pct }}% · Super deadline = pay date + 7 business days (minus clearing house lag)</p>
+{% if pay_runs | length == 0 %}
+<div class="empty-state"><p>No pay runs yet. <a href="/pay-runs/new">Log your first pay run →</a></p></div>
+{% else %}
+<table class="data-table">
+  <thead><tr><th>Pay Date</th><th>Period</th><th>Wages</th><th>Super Owing</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for run in pay_runs %}
+  <tr>
+    <td>{{ run.pay_date }}</td>
+    <td>{{ run.period_start }} – {{ run.period_end }}</td>
+    <td class="amount">${{ run.total_wages }}</td>
+    <td class="amount">${{ run.total_super_owing }}</td>
+    <td>{{ run.super_deadline }}</td>
+    <td><span class="status-badge {{ run.status_css }}">{{ run.status_emoji }} {{ run.status_label }}</span></td>
+    <td>
+      {% if not run.has_payment %}
+      <a href="/payments/new/{{ run.id }}" class="btn btn-sm btn-warning">Record Payment</a>
+      {% else %}
+      <a href="/pay-runs/{{ run.id }}" class="btn btn-sm">View</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

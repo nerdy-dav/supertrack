@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Pay Run Detail</h1>
+  <a href="/pay-runs" class="btn">← Back</a>
+</div>
+{% if run %}
+<div class="detail-grid">
+  <div class="detail-card">
+    <div class="detail-label">Pay Date</div>
+    <div class="detail-value">{{ run.pay_date }}</div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-label">Period</div>
+    <div class="detail-value">{{ run.period_start }} – {{ run.period_end }}</div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-label">Total Wages</div>
+    <div class="detail-value">${{ run.total_wages }}</div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-label">Super Owing</div>
+    <div class="detail-value amount">${{ run.total_super_owing }}</div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-label">Super Deadline</div>
+    <div class="detail-value">{{ run.super_deadline }}</div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-label">Days Until Deadline</div>
+    <div class="detail-value">{{ days_remaining }} days</div>
+  </div>
+  <div class="detail-card">
+    <div class="detail-label">Compliance Status</div>
+    <div class="detail-value"><span class="status-badge {{ status_css }}">{{ status_emoji }} {{ status_label }}</span></div>
+  </div>
+  {% if run.stp_reference %}
+  <div class="detail-card">
+    <div class="detail-label">STP Reference</div>
+    <div class="detail-value">{{ run.stp_reference }}</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if payment %}
+<div class="section">
+  <h2>Super Payment Recorded</h2>
+  <div class="detail-grid">
+    <div class="detail-card"><div class="detail-label">Payment Date</div><div class="detail-value">{{ payment.payment_date }}</div></div>
+    <div class="detail-card"><div class="detail-label">Amount Paid</div><div class="detail-value amount">${{ payment.amount_paid }}</div></div>
+    <div class="detail-card"><div class="detail-label">Receipt Ref</div><div class="detail-value">{{ payment.clearing_house_receipt | default(value="—") }}</div></div>
+    <div class="detail-card"><div class="detail-label">Fund Confirmed</div><div class="detail-value">{{ payment.fund_receipt_confirmed | replace(from="true", to="Yes") | replace(from="false", to="Pending") }}</div></div>
+  </div>
+</div>
+{% else %}
+<div class="section">
+  <div class="alert alert-warning">No super payment recorded for this pay run.</div>
+  <a href="/payments/new/{{ run.id }}" class="btn btn-primary">Record Super Payment</a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Employees</h1>
+  <a href="/employees/new" class="btn btn-primary">+ Add Employee</a>
+</div>
+{% if employees | length == 0 %}
+<div class="empty-state"><p>No employees added yet. <a href="/employees/new">Add your first employee →</a></p></div>
+{% else %}
+<table class="data-table">
+  <thead><tr><th>Name</th><th>Type</th><th>Super Fund</th><th>OTE/week</th><th>Super/week</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for e in employees %}
+  <tr>
+    <td>{{ e.name }}</td>
+    <td>{{ e.employment_type }}</td>
+    <td>{{ e.super_fund_name }}{% if e.member_number %} <small>({{ e.member_number }})</small>{% endif %}</td>
+    <td class="amount">${{ e.ote_weekly }}</td>
+    <td class="amount">${{ (e.ote_weekly * 0.12) | round(precision=2) }}</td>
+    <td>{% if e.active %}<span class="status-badge status-compliant">Active</span>{% else %}<span class="status-badge status-pending">Inactive</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}
