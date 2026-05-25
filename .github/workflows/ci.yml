@@ -47,8 +47,14 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: cargo build --release --target ${{ matrix.target }}
+      - name: Package binary
+        shell: bash
+        run: |
+          cp "target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}" \
+             "supertrack-${{ matrix.target }}${{ matrix.ext }}"
+          zip "supertrack-${{ matrix.target }}.zip" \
+             "supertrack-${{ matrix.target }}${{ matrix.ext }}"
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:
-          files: target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}
-          name: supertrack-${{ matrix.target }}
+          files: supertrack-${{ matrix.target }}.zip
