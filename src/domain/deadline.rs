@@ -103,3 +103,117 @@ pub fn business_days_remaining(deadline: NaiveDate, state: &str) -> i64 {
     }
     count
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_national_holiday() {
+        let d = NaiveDate::from_ymd_opt(2026, 1, 1).unwrap();
+        assert!(is_public_holiday(d, "NSW"));
+        assert!(is_public_holiday(d, "VIC"));
+        assert!(is_public_holiday(d, "QLD"));
+    }
+
+    #[test]
+    fn test_state_specific_holiday() {
+        let melbourne_cup = NaiveDate::from_ymd_opt(2026, 11, 3).unwrap();
+        assert!(is_public_holiday(melbourne_cup, "VIC"));
+        assert!(!is_public_holiday(melbourne_cup, "NSW"));
+        assert!(!is_public_holiday(melbourne_cup, "QLD"));
+    }
+
+    #[test]
+    fn test_not_a_holiday() {
+        let d = NaiveDate::from_ymd_opt(2026, 6, 15).unwrap();
+        assert!(!is_public_holiday(d, "VIC"));
+        assert!(!is_public_holiday(d, "NSW"));
+    }
+
+    #[test]
+    fn test_weekend_is_not_business_day() {
+        let sat = NaiveDate::from_ymd_opt(2026, 5, 30).unwrap(); // Saturday
+        let sun = NaiveDate::from_ymd_opt(2026, 5, 31).unwrap(); // Sunday
+        assert!(!is_business_day(sat, "VIC"));
+        assert!(!is_business_day(sun, "VIC"));
+    }
+
+    #[test]
+    fn test_holiday_is_not_business_day() {
+        let xmas = NaiveDate::from_ymd_opt(2026, 12, 25).unwrap();
+        assert!(!is_business_day(xmas, "VIC"));
+    }
+
+    #[test]
+    fn test_weekday_is_business_day() {
+        let wed = NaiveDate::from_ymd_opt(2026, 6, 17).unwrap();
+        assert!(is_business_day(wed, "VIC"));
+    }
+
+    #[test]
+    fn test_calculate_deadline_basic() {
+        let pay_date = NaiveDate::from_ymd_opt(2026, 6, 1).unwrap(); // Monday
+        let deadline = calculate_deadline(pay_date, "VIC", 0);
+        // 7 business days from Mon Jun 1:
+        // Jun 2 Tue (+1), 3 Wed (+2), 4 Thu (+3), 5 Fri (+4)
+        // Jun 6-7 weekend, Jun 8 Queen's Birthday VIC holiday
+        // Jun 9 Tue (+5), 10 Wed (+6), 11 Thu (+7)
+        assert_eq!(deadline, NaiveDate::from_ymd_opt(2026, 6, 11).unwrap());
+    }
+
+    #[test]
+    fn test_calculate_deadline_with_lag() {
+        let pay_date = NaiveDate::from_ymd_opt(2026, 6, 1).unwrap(); // Monday
+        let deadline = calculate_deadline(pay_date, "VIC", 1);
+        // 7 business days = Jun 11, minus 1 biz day lag = Jun 10
+        assert_eq!(deadline, NaiveDate::from_ymd_opt(2026, 6, 10).unwrap());
+    }
+
+    #[test]
+    fn test_calculate_deadline_crosses_holiday() {
+        let pay_date = NaiveDate::from_ymd_opt(2026, 12, 21).unwrap(); // Monday
+        let deadline = calculate_deadline(pay_date, "VIC", 0);
+        // 7 business days from Dec 21:
+        // Dec 22 Tue (+1), 23 Wed (+2), 24 Thu (+3)
+        // Dec 25 Fri XMAS holiday, Dec 26 Sat, 27 Sun
+        // Dec 28 Mon Boxing Day sub holiday, Dec 29 Tue (+4), 30 Wed (+5), 31 Thu (+6)
+        // Jan 1 Fri New Year holiday, Jan 2 Sat, 3 Sun
+        // Jan 4 Mon (+7)
+        assert_eq!(deadline, NaiveDate::from_ymd_opt(2027, 1, 4).unwrap());
+    }
+
+    #[test]
+    fn test_calculate_deadline_friday_pay() {
+        let pay_date = NaiveDate::from_ymd_opt(2026, 6, 5).unwrap(); // Friday
+        let deadline = calculate_deadline(pay_date, "VIC", 0);
+        // Fri Jun 5: +7 business days
+        // Jun 6 Sat skip, Jun 7 Sun skip
+        // Jun 8 Mon (+1), Jun 8 - Queen's Birthday in VIC? Actually in 2026 Queen's Birthday is Jun 8.
+        // Wait, looking at the holiday data: (2026, 6, 8, "NSW,VIC,SA,TAS,ACT,NT") - yes, it's a holiday in VIC
+        // So: Jun 8 is a holiday in VIC, skip
+        // Jun 9 Tue (+1), Jun 10 Wed (+2), Jun 11 Thu (+3), Jun 12 Fri (+4)
+        // Jun 13 Sat skip, Jun 14 Sun skip
+        // Jun 15 Mon (+5), Jun 16 Tue (+6), Jun 17 Wed (+7)
+        assert_eq!(deadline, NaiveDate::from_ymd_opt(2026, 6, 17).unwrap());
+    }
+
+    #[test]
+    fn test_queens_birthday_holiday_vic() {
+        let qb = NaiveDate::from_ymd_opt(2026, 6, 8).unwrap();
+        assert!(is_public_holiday(qb, "VIC"));
+        assert!(is_public_holiday(qb, "NSW"));
+        assert!(!is_public_holiday(qb, "QLD"));
+        assert!(!is_public_holiday(qb, "WA"));
+    }
+
+    #[test]
+    fn test_2027_holidays() {
+        let nyd = NaiveDate::from_ymd_opt(2027, 1, 1).unwrap();
+        assert!(is_public_holiday(nyd, "VIC"));
+
+        let melb_cup_2027 = NaiveDate::from_ymd_opt(2027, 11, 2).unwrap();
+        assert!(is_public_holiday(melb_cup_2027, "VIC"));
+        assert!(!is_public_holiday(melb_cup_2027, "NSW"));
+    }
+}
