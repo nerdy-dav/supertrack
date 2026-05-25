@@ -4,7 +4,7 @@
 <div class="form-card">
   <div class="info-box">
     <strong>Super Deadline for this pay run: {{ super_deadline }}</strong><br>
-    Amount owing: ${{ super_owing | round(precision=2) }}
+    Amount owing: ${{ super_owing }}
   </div>
   <form method="post" action="/payments/new/{{ pay_run_id }}">
     <div class="form-group">
@@ -14,7 +14,7 @@
     </div>
     <div class="form-group">
       <label>Amount Paid ($)</label>
-      <input type="number" name="amount_paid" step="0.01" value="{{ super_owing | round(precision=2) }}" required>
+      <input type="number" name="amount_paid" step="0.01" value="{{ super_owing }}" required>
     </div>
     <div class="form-group">
       <label>Clearing House Receipt / Reference (optional but recommended)</label>

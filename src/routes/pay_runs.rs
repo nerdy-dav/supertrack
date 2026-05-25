@@ -56,7 +56,7 @@ pub async fn new_form(State(state): State<Arc<AppState>>) -> Html<String> {
     let employees = state.db.list_employees();
     let business = state.db.get_business();
     let sgc_rate = business.as_ref().map(|b| b.sgc_rate).unwrap_or(0.12);
-    let ctx = context! { today => today.to_string(), employees => employees, sgc_rate => sgc_rate };
+    let ctx = context! { today => today.to_string(), employees => employees, sgc_rate_pct => sgc_rate * 100.0 };
     crate::routes::render(&state.env, "pay_run_form.html", ctx)
 }
 
@@ -97,9 +97,26 @@ pub async fn show(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Ht
         let paid_date = payment.as_ref().and_then(|p| NaiveDate::parse_from_str(&p.payment_date, "%Y-%m-%d").ok());
         let status = determine_status(deadline, paid_date, &state_code);
         let days_remaining = (deadline - today).num_days();
+        let run_json = serde_json::json!({
+            "id": run.id,
+            "pay_date": run.pay_date,
+            "period_start": run.period_start,
+            "period_end": run.period_end,
+            "total_wages": format!("{:.2}", run.total_wages),
+            "total_super_owing": format!("{:.2}", run.total_super_owing),
+            "super_deadline": run.super_deadline,
+            "stp_reference": run.stp_reference,
+            "created_at": run.created_at,
+        });
+        let payment_json = payment.as_ref().map(|p| serde_json::json!({
+            "payment_date": p.payment_date,
+            "amount_paid": format!("{:.2}", p.amount_paid),
+            "clearing_house_receipt": p.clearing_house_receipt,
+            "fund_receipt_confirmed": if p.fund_receipt_confirmed { "Yes" } else { "Pending" },
+        }));
         let ctx = context! {
-            run => run,
-            payment => payment,
+            run => run_json,
+            payment => payment_json,
             status_label => status.label(),
             status_emoji => status.emoji(),
             status_css => status.css_class(),

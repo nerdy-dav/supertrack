@@ -19,10 +19,10 @@ pub struct PaymentForm {
 
 pub async fn new_form(State(state): State<Arc<AppState>>, Path(pay_run_id): Path<i64>) -> Html<String> {
     let today = chrono::Local::now().date_naive();
-    let (super_owing, super_deadline) = state.db.get_pay_run(pay_run_id)
-        .map(|r| (r.total_super_owing, r.super_deadline))
-        .unwrap_or((0.0, String::new()));
-    let ctx = context! { today => today.to_string(), pay_run_id => pay_run_id, super_owing => super_owing, super_deadline => super_deadline };
+    let (super_owing_formatted, super_deadline) = state.db.get_pay_run(pay_run_id)
+        .map(|r| (format!("{:.2}", r.total_super_owing), r.super_deadline))
+        .unwrap_or(("0.00".to_string(), String::new()));
+    let ctx = context! { today => today.to_string(), pay_run_id => pay_run_id, super_owing => super_owing_formatted, super_deadline => super_deadline };
     crate::routes::render(&state.env, "payment_form.html", ctx)
 }
 

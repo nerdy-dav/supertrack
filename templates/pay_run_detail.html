@@ -48,8 +48,8 @@
   <div class="detail-grid">
     <div class="detail-card"><div class="detail-label">Payment Date</div><div class="detail-value">{{ payment.payment_date }}</div></div>
     <div class="detail-card"><div class="detail-label">Amount Paid</div><div class="detail-value amount">${{ payment.amount_paid }}</div></div>
-    <div class="detail-card"><div class="detail-label">Receipt Ref</div><div class="detail-value">{{ payment.clearing_house_receipt | default(value="—") }}</div></div>
-    <div class="detail-card"><div class="detail-label">Fund Confirmed</div><div class="detail-value">{{ payment.fund_receipt_confirmed | replace(from="true", to="Yes") | replace(from="false", to="Pending") }}</div></div>
+    <div class="detail-card"><div class="detail-label">Receipt Ref</div><div class="detail-value">{{ payment.clearing_house_receipt | default("—") }}</div></div>
+    <div class="detail-card"><div class="detail-label">Fund Confirmed</div><div class="detail-value">{{ payment.fund_receipt_confirmed }}</div></div>
   </div>
 </div>
 {% else %}

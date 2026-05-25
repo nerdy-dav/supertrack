@@ -1,6 +1,5 @@
 use rusqlite::{Connection, Result, params};
 use std::sync::Mutex;
-use chrono::NaiveDate;
 
 pub struct Database {
     conn: Mutex<Connection>,

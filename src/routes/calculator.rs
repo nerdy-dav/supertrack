@@ -19,6 +19,14 @@ pub async fn show(State(state): State<Arc<AppState>>, Query(q): Query<CalcQuery>
 
     if let Some(wages) = q.monthly_wages {
         let impact = calculate_impact(wages, &pay_freq, sgc_rate);
+        let impact = serde_json::json!({
+            "annual_super_total": format!("{:.0}", impact.annual_super_total),
+            "quarterly_super_lump": format!("{:.0}", impact.quarterly_super_lump),
+            "per_fortnight_super": format!("{:.0}", impact.per_fortnight_super),
+            "per_week_super": format!("{:.0}", impact.per_week_super),
+            "working_capital_shift": format!("{:.0}", impact.working_capital_shift),
+            "recommended_buffer": format!("{:.0}", impact.recommended_buffer),
+        });
         let ctx = context! { impact => impact, monthly_wages => wages, pay_freq => pay_freq };
         return crate::routes::render(&state.env, "calculator.html", ctx);
     }

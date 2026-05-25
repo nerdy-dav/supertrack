@@ -6,7 +6,7 @@
   <form method="get" action="/calculator">
     <div class="form-group">
       <label>Monthly Wage Bill ($)</label>
-      <input type="number" name="monthly_wages" value="{{ monthly_wages | default(value='') }}" step="100" min="0" placeholder="e.g. 45000">
+      <input type="number" name="monthly_wages" value="{{ monthly_wages | default('') }}" step="100" min="0" placeholder="e.g. 45000">
     </div>
     <button type="submit" class="btn btn-primary">Calculate</button>
   </form>
@@ -18,23 +18,23 @@
   <div class="card-row">
     <div class="card">
       <div class="card-label">Annual Super Total</div>
-      <div class="card-value">${{ impact.annual_super_total | round(precision=0) }}</div>
+      <div class="card-value">${{ impact.annual_super_total }}</div>
     </div>
     <div class="card card-warning">
       <div class="card-label">What You Used to Pay (Quarterly)</div>
-      <div class="card-value">${{ impact.quarterly_super_lump | round(precision=0) }}</div>
+      <div class="card-value">${{ impact.quarterly_super_lump }}</div>
     </div>
     <div class="card card-ok">
       <div class="card-label">Per Fortnight (new)</div>
-      <div class="card-value">${{ impact.per_fortnight_super | round(precision=0) }}</div>
+      <div class="card-value">${{ impact.per_fortnight_super }}</div>
     </div>
   </div>
   <div class="calc-summary">
     <h3>What this means for you:</h3>
     <ul>
-      <li>💸 <strong>Working capital shift:</strong> You'll need ${{ impact.working_capital_shift | round(precision=0) }} available earlier each quarter compared to the old quarterly cycle.</li>
-      <li>💰 <strong>Per pay run, super exits your account:</strong> ${{ impact.per_fortnight_super | round(precision=0) }} (fortnightly) or ${{ impact.per_week_super | round(precision=0) }} (weekly)</li>
-      <li>🛡️ <strong>Recommended cash buffer:</strong> Keep at least ${{ impact.recommended_buffer | round(precision=0) }} in your operating account on paydays.</li>
+      <li>💸 <strong>Working capital shift:</strong> You'll need ${{ impact.working_capital_shift }} available earlier each quarter compared to the old quarterly cycle.</li>
+      <li>💰 <strong>Per pay run, super exits your account:</strong> ${{ impact.per_fortnight_super }} (fortnightly) or ${{ impact.per_week_super }} (weekly)</li>
+      <li>🛡️ <strong>Recommended cash buffer:</strong> Keep at least ${{ impact.recommended_buffer }} in your operating account on paydays.</li>
       <li>⚠️ <strong>If you pay late:</strong> Penalties are daily compounding interest + admin fee. These are NOT tax deductible from 1 July 2025.</li>
     </ul>
   </div>

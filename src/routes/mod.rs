@@ -7,7 +7,6 @@ pub mod calculator;
 pub mod reports;
 
 use axum::response::Html;
-use minijinja::context;
 
 pub fn render(env: &minijinja::Environment, template: &str, ctx: minijinja::Value) -> Html<String> {
     match env.get_template(template) {

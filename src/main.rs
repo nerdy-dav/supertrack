@@ -4,7 +4,7 @@ mod routes;
 
 use axum::{
     Router,
-    routing::{get, post},
+    routing::{get},
     response::Response,
     body::Body,
     http::header,
@@ -33,6 +33,7 @@ async fn main() -> anyhow::Result<()> {
 
     let mut env = minijinja::Environment::new();
     env.set_loader(minijinja::path_loader("templates"));
+    env.set_undefined_behavior(minijinja::UndefinedBehavior::Chainable);
 
     let state = Arc::new(AppState {
         db: Arc::new(database),

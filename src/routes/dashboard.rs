@@ -16,7 +16,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> Html<String> {
     let runs_with_payments = state.db.list_all_payments();
     let today = chrono::Local::now().date_naive();
 
-    let mut rows: Vec<serde_json::Value> = runs_with_payments.iter().map(|(run, payment)| {
+    let rows: Vec<serde_json::Value> = runs_with_payments.iter().map(|(run, payment)| {
         let deadline = NaiveDate::parse_from_str(&run.super_deadline, "%Y-%m-%d").unwrap_or(today);
         let paid_date = payment.as_ref().and_then(|p| NaiveDate::parse_from_str(&p.payment_date, "%Y-%m-%d").ok());
         let status = determine_status(deadline, paid_date, &state_code);

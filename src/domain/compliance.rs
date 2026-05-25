@@ -74,10 +74,4 @@ pub fn determine_status(
     }
 }
 
-/// Estimate SGC penalty for late super payment
-/// SGC = unpaid super + interest (10% p.a.) + $20 admin fee per employee per quarter
-pub fn estimate_sgc_penalty(amount_owing: f64, days_late: u32, employee_count: u32) -> f64 {
-    let interest = amount_owing * 0.10 * (days_late as f64 / 365.0);
-    let admin = 20.0 * employee_count as f64;
-    amount_owing + interest + admin
-}
+

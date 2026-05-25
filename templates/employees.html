@@ -16,7 +16,7 @@
     <td>{{ e.employment_type }}</td>
     <td>{{ e.super_fund_name }}{% if e.member_number %} <small>({{ e.member_number }})</small>{% endif %}</td>
     <td class="amount">${{ e.ote_weekly }}</td>
-    <td class="amount">${{ (e.ote_weekly * 0.12) | round(precision=2) }}</td>
+    <td class="amount">${{ e.super_per_week }}</td>
     <td>{% if e.active %}<span class="status-badge status-compliant">Active</span>{% else %}<span class="status-badge status-pending">Inactive</span>{% endif %}</td>
   </tr>
   {% endfor %}

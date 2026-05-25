@@ -87,12 +87,6 @@ pub fn calculate_deadline(pay_date: NaiveDate, state: &str, clearing_lag_days: u
     current
 }
 
-/// Days remaining until deadline (negative = overdue)
-pub fn days_until_deadline(deadline: NaiveDate) -> i64 {
-    let today = chrono::Local::now().date_naive();
-    (deadline - today).num_days()
-}
-
 /// Business days remaining
 pub fn business_days_remaining(deadline: NaiveDate, state: &str) -> i64 {
     let today = chrono::Local::now().date_naive();
