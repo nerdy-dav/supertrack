@@ -3,7 +3,7 @@
 A self-hosted web application for Australian small businesses to track
 Payday Super obligations (effective 1 July 2026).
 
-[Download the latest release](https://github.com/your-org/supertrack/releases/latest)
+[Download the latest release](https://github.com/nerdy-dav/supertrack/releases/latest)
 — compiled binaries for Linux, macOS (Apple Silicon), and Windows. No Rust or
 build tools needed.
 
@@ -18,7 +18,7 @@ build tools needed.
 
 ## Quick Start
 
-1. Download the binary for your OS from the [releases page](https://github.com/your-org/supertrack/releases/latest)
+1. Download the binary for your OS from the [releases page](https://github.com/nerdy-dav/supertrack/releases/latest)
 2. Run it from a terminal:
    ```bash
    ./supertrack
