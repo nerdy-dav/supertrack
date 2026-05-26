@@ -47,22 +47,25 @@ jobs:
         with:
           target: ${{ matrix.target }}
       - run: cargo build --release --target ${{ matrix.target }}
-      - name: Package binary (Linux/macOS)
+      - name: Package (Linux/macOS)
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          cp "target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}" \
-             "supertrack-${{ matrix.target }}${{ matrix.ext }}"
-          zip "supertrack-${{ matrix.target }}.zip" \
-             "supertrack-${{ matrix.target }}${{ matrix.ext }}"
-      - name: Package binary (Windows)
+          dir="supertrack-${{ matrix.target }}"
+          mkdir -p "$dir"
+          cp "target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}" "$dir/"
+          cp -r templates "$dir/"
+          zip -r "${dir}.zip" "$dir"
+      - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          $dir = "supertrack-${{ matrix.target }}"
+          New-Item -ItemType Directory -Path $dir
           Copy-Item "target/${{ matrix.target }}/release/supertrack${{ matrix.ext }}" `
-            -Destination "supertrack-${{ matrix.target }}${{ matrix.ext }}"
-          Compress-Archive -Path "supertrack-${{ matrix.target }}${{ matrix.ext }}" `
-            -DestinationPath "supertrack-${{ matrix.target }}.zip"
+            -Destination "$dir/supertrack${{ matrix.ext }}"
+          Copy-Item -Recurse -Path templates -Destination "$dir/"
+          Compress-Archive -Path $dir -DestinationPath "${dir}.zip"
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:
